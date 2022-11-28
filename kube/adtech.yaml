@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adtech
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adtech
+  template:
+    metadata:
+      labels:
+        app: adtech
+    spec:
+      containers:
+        - name: app
+          image: ozenero/ad-tech:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: WEB_PARSE_URL
+              value: webparsers:9000/web-parser
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adtech
+spec:
+  selector:
+    app: adtech
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
