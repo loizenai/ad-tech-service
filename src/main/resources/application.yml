@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /ad-tech
+spring:
+  application:
+    name: ad-tech-service
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 20000
+        readTimeout: 20000
+        loggerLevel: BASIC
+config:
+  services:
+    web-parser:
+      url: http://localhost:9000/web-parser
+# health check
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readynessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    restart:
+      enabled: true
+    shutdown:
+      enabled: true
+    health:
+      group:
+        liveness:
+          include: '*'
+        readiness:
+          include: '*'
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      jmx:
+        enabled: ${METRIC_JMX_ENALBED:true}
+      logging:
+        enabled: ${METRIC_LOGGING_ENALBED:false}
+    tags:
+      application-name: ${spring.application.name}
+logging:
+  file:
+    name: ${LOGGING_FILE_NAME:ads_categories_service}
+    path: ${LOGGING_PATH:/tmp/log}
